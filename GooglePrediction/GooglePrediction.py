@@ -94,7 +94,7 @@ class TrainedModel(object):
 
 
 
-trainedModel = TrainedModel(PROJECT_ID, "political_bias")
+#trainedModel = TrainedModel(PROJECT_ID, "political_bias")
 
 
 ##Creating model and check if it has been done.
@@ -114,71 +114,4 @@ while True:
 
 
 '''
-
-print(trainedModel.analyze())
-
-
-
-db = mysql.connector.connect(user='root', password='ly9739ql', database='sentiment_search')
-cursor = db.cursor()
-
-
-def update_article_political_compass():
-    #check if the table exists. if not create one
-    create_article_political_compass_table()
-
-    #get all article id in article database
-    cursor.execute("SELECT id FROM ARTICLE")
-    article_ids = cursor.fetchall()
-
-    # find the text file that contains article of given article id
-    for article_id in article_ids:
-        article_id = article_id[0]
-        print(article_id)
-
-        if key_exist_in_article_political_compass(article_id):
-            continue
-
-        article_content = open("../dataset/" + article_id + ".txt").read()
-        result =trainedModel.predict(article_content)
-
-        label = result['outputLabel']
-        print("label : " + result['outputLabel'])
-
-        outputMulti = result['outputMulti']
-        for output in outputMulti:
-            if output['label'] == 'conservative' :
-                conservative_score = output['score']
-            else:
-                liberal_score = output['score']
-
-        insert_article_political_compass(article_id, label, liberal_score, conservative_score )
-        print(article_content)
-
-
-def create_article_political_compass_table():
-    cursor.execute("""
-            CREATE TABLE IF NOT EXISTS ArticlePoliticalCompass (
-                                        liberal_score DOUBLE,
-                                        conservative_score DOUBLE,
-                                        label VARCHAR(50),
-                                        articleKey VARCHAR(255),
-                                        FOREIGN KEY(articleKey) REFERENCES ARTICLE (id))""")
-    db.commit()
-
-
-def insert_article_political_compass(article_key, label, liberal_score, conservative_score):
-    cursor.execute("""INSERT IGNORE INTO ArticlePoliticalCompass
-                        (liberal_score, conservative_score, label, articleKey)
-                        VALUES(%s, %s, %s, %s)""", (liberal_score, conservative_score, label, article_key))
-    db.commit()
-
-def key_exist_in_article_political_compass(id):
-    cursor.execute("""SELECT count(*) FROM ArticlePoliticalCompass WHERE articleKey = %s""", (id, ))
-    result = cursor.fetchall()
-    return result[0][0] == 1
-
-
-
-update_article_political_compass()
 
