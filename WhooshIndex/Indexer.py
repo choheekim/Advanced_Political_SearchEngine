@@ -92,12 +92,13 @@ class WhooshSearch:
 
 
     def find_matching_political_bias(self, search_results, query_label, query_score):
-        article_ids = set()
+        article_ids = list()
         for result in search_results:
             article_id = result['id']
             article_political_score = self.get_article_political_bias_score(article_id, query_label)
             if article_political_score > (query_score - 0.1) and article_political_score < (query_score + 0.1):
-                article_ids.add(result['id'])
+                if not result['id'] in article_ids:
+                    article_ids.append(result['id'])
         return article_ids
 
 
