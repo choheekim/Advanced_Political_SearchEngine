@@ -55,7 +55,9 @@ class NYTDatabase:
                 print("Key exist")
                 continue
 
-            formatted_date = datetime.strptime(article_date.split("+")[0], "%Y-%m-%dT%H:%M:%S")
+            print(article_date.split("+")[0])
+
+            formatted_date = datetime.strptime(str(article_date.split("+")[0]), "%Y-%m-%dT%H:%M:%S")
             print("\n\nurl : " + web_url)
             print("article section : " + article_section)
             print("article subsection : " + article_subsection)
@@ -96,8 +98,8 @@ class NYTDatabase:
         return None
 
     def crawl_data(self):
-        for year in range(2014, 2017):
-            for month in range(1, 13):
+        for year in range(2017, 2018):
+            for month in range(4, 5):
                 url =self.format_url(year, month)
                 response = requests.get(url, params=PARAMETERS)
                 self.archive_parse_json(response.json())

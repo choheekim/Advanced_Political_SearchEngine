@@ -124,11 +124,11 @@ class ContentDB:
 
                 print(str(count) + ". Writing " + id)
 
-                writer = self.idx.writer()
-                writer.add_document(title=title,
-                                    content=story,
-                                    id=id)
-                writer.commit()
+                #writer = self.idx.writer()
+                #writer.add_document(title=title,
+                 #                   content=story,
+                 #                   id=id)
+                #writer.commit()
                 self.insert_data_into_article_content(title, id)
 
                 if not self.key_exist_in_article_political_compass(id):
@@ -144,11 +144,11 @@ class ContentDB:
                             liberal_score = output['score']
                     self.insert_article_political_compass(id, label, liberal_score, conservative_score)
 
-                #self.wrtie_content_text_file(id, story)
+                self.wrtie_content_text_file(id, story)
             else:
                 print(id + " key already existed")
-                #if not self.key_exist_in_article_sentiment(id):
-                #self.insert_data_into_article_sentiment(id)
+            if not self.key_exist_in_article_sentiment(id):
+                self.insert_data_into_article_sentiment(id)
             count += 1
 
 
